@@ -1,4 +1,12 @@
+在自己服务器上搭建：
+具有python环境，需要安装flask pymysql flask_jwt 框架具有node环境
+cd flask ,
+python createDB.py
+python run.py
 
+cd blog2017
+npm install
+npm run build
 Blog 2017 数据库与接口设计
 
 database:blog2017 tables:user,articles,comment,album
