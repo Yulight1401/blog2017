@@ -1,38 +1,3 @@
-# blog2017
-2017新版博客，采用material design,vue-cli,flask,mysql,webpack作为主要工具来开发的新版博客。
-同时开发出可以同步移植到其他服务器上的整体解决方案。
-大家可以直接将一个拥有后台和前端的博客系统搭建到自己的服务器上。不过关键数据会进行修改，需要用户自己匹配服务器，将设置参数尽量分离开来。
-
-##first
-
-U should have already install python envirnoment.
-
-U need python libs : flask pymysql flask-jwt , use pip install to get them
-
-##second
-
-####Build the backend:
-
-run createDB.py to create database,before this step,u need to revise the configure to connect to the mysql
-
-run run.py to start the flask frameworks , and apis is accessed
-
-#####Build the frontend:
-
-cd blog2017
-
-npm install
-
-npm run dev //to test ,otherwise u can igonre this step ,then open localhost:8088 to see what happened
-
-npm run build //get the production
-
-
-
----------
-
-Here are some documents that u can refer from:
-
 
 Blog 2017 数据库与接口设计
 
@@ -135,3 +100,16 @@ get /get_album  return a img
 ##设计需求 
 主色调:白色 ，辅助：黑，灰
 
+
+重要改动：
+
+comment sonid ->用于储存评论对应的文章id，查找文章的评论的时候，先取得所有关于文章的评论
+通过fatherid，查找关于该评论的所有子评论
+
+回复文章：设置sonid = 文章id ,fatherid=-1
+
+回复评论：设置fatherid = 评论id ，sonid=-1
+
+评论单独为组件，利用props传递数据
+
+子评论系统设计缺陷，导致只能在一个话题里回复，无法交叉回复（太难处理，单纯回复一方还是可以的）
