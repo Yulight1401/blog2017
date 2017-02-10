@@ -3,15 +3,15 @@
     <div class="col s12 m6 l4">
     <div class="card small sticky-action">
     <div class="card-image waves-effect waves-block waves-light">
-      <img class="activator"  src="../../static/images/bg4.jpg">
+      <img class="activator" v-bind:src="imgSrc" >
     </div>
     <div class="card-content">
-      <span class="card-title activator grey-text text-darken-4">Card Title<i class="material-icons right">more_vert</i></span>
-      <p><router-link to="/articleone" tag="a">阅读</router-link></p>
+      <span class="card-title activator grey-text text-darken-4">{{articleData.title}}<i class="material-icons right">more_vert</i></span>
+      <p><router-link v-bind:to="articleSrc" tag="a">阅读</router-link></p>
     </div>
     <div class="card-reveal">
-      <span class="card-title grey-text text-darken-4">Card Title<i class="material-icons right">close</i></span>
-      <p>Here is some more information about this product that is only revealed once clicked on.</p>
+      <span class="card-title grey-text text-darken-4">{{articleData.title}}<i class="material-icons right">close</i></span>
+      <p>{{articleData.subtitle}}</p>
     </div>
   </div>
     </div>
@@ -23,11 +23,30 @@
 
 export default {
   name: 'card',
-  methods: {
-    show: () => {
-      console.log('???');
-      $('.button-collapse').sideNav('show');
+  props: {
+    articleData:{
+      type: Object,
+      default: function () {
+        return {
+          title: "",
+          subtitle: "",
+          img: "../static/images/bg4.jpg",
+          articlesrc: "",
+          id: ""
+        }
+      }
+    }
+  },
+  computed: {
+    imgSrc: function () {
+      return "../"+this.articleData.img
     },
+    articleSrc: function () {
+      return "/articleone/"+this.articleData.id
+    }
+  },
+  methods: {
+
   },
 };
 </script>

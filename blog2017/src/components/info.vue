@@ -4,7 +4,7 @@
 <form class="col s12">
   <div class="row">
     <div class="input-field col s12">
-      <input id="username" type="text" class="validate" v-bind:class="{invalid:usok}" v-model="username">
+      <input disabled id="username" type="text" class="validate"  v-model="username">
       <label for="username"  v-bind:data-error="userror">用户名</label>
     </div>
   </div>
@@ -29,7 +29,7 @@
   <div class="row">
     <div class="input-field col s12">
       <input id="password" type="password" class="validate" v-model="password" >
-      <label for="password">密码</label>
+      <label for="password">修改密码</label>
     </div>
   </div>
   <div class="row">
@@ -45,22 +45,6 @@
 <div class="progress" v-if="loading">
       <div class="indeterminate"></div>
   </div>
-<div id="userknow" class="modal modal-fixed-footer">
-    <div class="modal-content">
-      <h4>用户须知</h4>
-      <p>谢谢您注册Yul的博客，您一定是Yul的朋友吧！</p>
-      <p>自您同意本协议起，您就获得了评论功能，开心吧？！</p>
-      <p>请您与作者一起构建一个优雅的博客环境，不要在评论区搞事情！</p>
-      <p>求大佬别来搞我的后台哦，我对部分接口有一定的防护措施～</p>
-      <p>告诉您一个小秘密：本系统开源在github,项目名blog2017。
-      同时你可以和我联系，让你成为合作作者，然后我们就可以一起愉快的撸文呢</p>
-    </div>
-    <div class="modal-footer">
-      <a  class=" modal-action modal-close waves-effect waves-green btn-flat">反对</a>
-      <a  class=" modal-action waves-effect waves-green btn" v-on:click="regist">接受</a>
-    </div>
-  </div>
-</div>
 
   </div>
 </template>
@@ -71,11 +55,10 @@ import {User} from '../common/http.js'
 import Cookie from '../common/cookie.js'
 
 export default {
-  name: 'regist',
+  name: 'info',
   data: function () {
     return {
-      psok: false,
-      usok: false,
+      psok: true,
       githubok: false,
       wechatok: false,
       loading: false,
@@ -85,49 +68,62 @@ export default {
       spassword: "",
       github: "",
       wechat: "",
-      info: ""
+      info: "",
+      userid: ""
     }
   },
-  mounted: () => {
-    $('.modal').modal();
+  mounted: function () {
+    this.getInfo()
   },
   methods: {
     validform: function () {
       let vm=this
-      this.username.length == 0 ? this.usok=true :
-      function(){vm.github.length == 0 ? vm.githubok=true :
+      vm.github.length == 0 ? vm.githubok=true :
       function(){vm.wechat.length == 0 ? vm.wechatok=true :
-      function(){!vm.psok&&vm.password.length!=0?function(){ $('#userknow').modal('open')}():alert('请确认密码！')}()}()
-      }()
+      function(){!vm.psok&&vm.password.length!=0?function(){ vm.regist()}():
+      alert('请确认密码！')}()}()
     },
     validpassword: function () {
       this.spassword == this.password ? this.psok = false:this.psok = true
     },
+    getInfo: function () {
+      let vm = this
+      User.getInfo(vm.$route.params, function(data,status){
+        data.status == 'error' ? Materialize.toast('获取用户信息错误：'+data.info, 4000) : data = data.data
+        vm.username = data.username
+        vm.github = data.github
+        vm.wechat = data.wechat
+        vm.info = data.info
+        vm.userid = data.id
+      }, function(err){
+        Materialize.toast('获取用户信息错误：'+err.statusText, 4000)
+      })
+    },
     regist: function () {
       this.loading = true
       let vm=this
-      let data = {username:this.username, password:this.password, github:this.github, wechat:this.wechat, info:this.info}
-      User.create(data,function(data){
-        data.status=='error' ?
-        function(){
-          Materialize.toast('注册失败:'+data.info, 4000)
-          $('#userknow').modal('close')
+      let formData = {password:this.password, github:this.github, wechat:this.wechat, info:this.info}
+      let userData,token
+      Cookie.get('user') == '' ? function() {Materialize.toast('需要再次登录', 4000);vm.$router.push('/login')}() :userData = JSON.parse(Cookie.get('user'))
+      User.login(userData,function(data,status){
+        token = data['access_token']
+        User.revise(formData,token,function(data){
+          data.status=='error' ?
+          function(){
+            Materialize.toast('修改失败:'+data.info, 4000)
+            vm.loading = false
+          }():
+          function(){
+            Materialize.toast('修改成功', 4000);
+            vm.loading = false
+            let user={username:vm.username,password:vm.spassword}
+            Cookie.set('user',JSON.stringify(user),2)
+          }()
+        },function(err){
           vm.loading = false
-          vm.userror = "用户名重复"
-          vm.usok = true
-        }():
-        function(){
-          Materialize.toast('注册成功', 4000);
-          $('#userknow').modal('close')
-          vm.loading = false
-          let user={username:vm.username,password:vm.spassword}
-          Cookie.set('user',JSON.stringify(user),2)
-        }()
-      },function(err){
-        $('#userknow').modal('close')
-        vm.loading = false
-        Materialize.toast('错误：'+err.statusText, 4000)
-      })
+          Materialize.toast('错误：'+err.statusText, 4000)
+        })
+      },function(){})
     },
   },
 };
