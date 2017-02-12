@@ -1,13 +1,36 @@
-在自己服务器上搭建：
-具有python环境，需要安装flask pymysql flask_jwt 框架具有node环境
-cd flask ,
-python createDB.py
-python run.py
+## 将该博客部署到服务器的正确姿势：
 
-cd blog2017
-npm install
-npm run build
-Blog 2017 数据库与接口设计
+### 1.服务器安装python模块 ： 
+
+`pip install flask,flask-jwt,mysql-connector,pymsql,`
+
+创建数据库：
+
+`cd flask`
+
+`python createDB.py`
+
+启用flask
+
+`python run.py`
+
+### 2.本地打造Production版本
+
+`cd blog2017`
+
+`npm install`
+
+`npm run build`
+
+在./dist 得到 static目录 和 index.html
+
+将dist下的所有文件，放到你提供网页服务的根目录里
+
+flask目录和dist目录在同一层级
+
+这样博客就正常运作了
+
+### Blog 2017 数据库与接口设计
 
 database:blog2017 tables:user,articles,comment,album
 
@@ -119,5 +142,3 @@ comment sonid ->用于储存评论对应的文章id，查找文章的评论的�
 回复评论：设置fatherid = 评论id ，sonid=-1
 
 评论单独为组件，利用props传递数据
-
-子评论系统设计缺陷，导致只能在一个话题里回复，无法交叉回复（太难处理，单纯回复一方还是可以的）
