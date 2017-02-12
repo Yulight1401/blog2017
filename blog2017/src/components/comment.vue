@@ -1,8 +1,21 @@
 <template>
-  <div id="" class="col s12">
+  <div id="" class="col s12" >
+  <div class="col s12" style="text-align:center">
+  <div class="preloader-wrapper small active" style="" v-if="loading">
+    <div class="spinner-layer spinner-gray-only">
+      <div class="circle-clipper left">
+        <div class="circle"></div>
+      </div><div class="gap-patch">
+        <div class="circle"></div>
+      </div><div class="circle-clipper right">
+        <div class="circle"></div>
+      </div>
+    </div>
+  </div>
+  </div>
   <ul class="collapsible popout " data-collapsible="expandable">
   <li v-for="item in Datas">
-    <div class="collapsible-header">{{item.name}}<span class="badge"><a v-on:click.stop="reComment" v-bind:data-id="item.id" class="waves-effect waves-teal btn-flat">回复</a></span> <span class="badge">评论数：{{item.for}}</span><span class="badge" >发布于：{{item.create}}</span></div>
+    <div class="collapsible-header">{{item.name}}<span class="badge"><a v-on:click.stop="reComment" v-bind:data-id="item.id" v-bind:data-fid="item.id" v-bind:data-usname="item.name" class="waves-effect waves-teal btn-flat">回复</a></span> <span class="badge">评论数：{{item.for}}</span><span class="badge" >发布于：{{item.create}}</span></div>
 
     <div class="collapsible-body">
     <p>{{item.content}}</p>
@@ -14,7 +27,7 @@
       <br>
       {{its.content}}
       <br><span class="badge">评论数：{{its.for}}</span><span class="badge" >发布于：{{its.create}}</span>
-      <a class="secondary-content"><span class="badge"><a v-on:click.stop="reComment" v-bind:data-id="item.id" class="waves-effect waves-light btn">回复</a></a>
+      <a class="secondary-content"><span class="badge"><a v-on:click.stop="reComment" v-bind:data-id="its.id" v-bind:data-fid="item.id" v-bind:data-usname="its.name" class="waves-effect waves-light btn">回复</a></a>
     </li>
     </ul>
   </li>
@@ -32,51 +45,51 @@ export default {
   data: function () {
     return{
       Datas:[],
-      SDatas:[]
+      loading:true
     }
   },
-  props :['articleId'],
+  created : function () {
+    this.getData()
+  },
+  props :['articleId','render'],
   mounted: function () {
     $('.collapsible').collapsible();
     $('.parallax').parallax();
+    this.getData()
   },
-  created: function(){
-    this.getByarticle()
-  },
-  watch: {
-    '$route' : function (to, from){
-
+  watch:{
+    'render': function(){
+      this.getData()
+    },
+    '$route': function(to,from){
+      this.getData()
     }
   },
   computed: {
   },
   methods: {
-    getByarticle: function () {
-      let vm=this
-      let arrayS
+    getData : function () {
+      let vm = this
+      let fData = []
       Comment.getByarticle({id:vm.articleId},function(data,status){
-        vm.SDatas = data.data
-        vm.SDatas.forEach(function(item,index){
-          vm.getByson(item,index)
+        fData = data.data
+        fData.length == 0 ? vm.loading=false : null ;
+        for( let item in fData){
+        console.log(item,fData.length)
+        Comment.getByson({id:fData[item].id},function(data,status){
+          let tempData = data.data
+          fData[item].sonData = tempData
+          item == fData.length-1 ? function(){vm.Datas = fData;vm.loading=false}() : () => {}
+        },function(err){
+          Materialize.toast('获取子评论错误:'+err.statusText, 4000)
         })
+        }
         },function(err){
         Materialize.toast('获取文章评论错误:'+err.statusText, 4000)
       })
     },
-    getByson: function (item,index) {
-      let vm=this
-      let SDatas=[]
-      Comment.getByson({id:item.id},function(data,status){
-        SDatas = data.data
-        vm.SDatas[index].sonData=SDatas
-        vm.Datas=vm.SDatas
-        console.log(JSON.stringify(vm.Datas))
-      },function(err){
-        Materialize.toast('获取子评论错误:'+err.statusText, 4000)
-      })
-    },
     reComment: function () {
-      this.$store.commit('commentState',{type:'comment',id:event.target.dataset.id})
+      this.$store.commit('commentState',{type:'comment',id:event.target.dataset.id, name:event.target.dataset.usname, fid:event.target.dataset.fid})
       $('#modal1').modal('open')
     }
   },

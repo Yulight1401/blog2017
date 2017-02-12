@@ -28,6 +28,10 @@ export default {
       $('.button-collapse').sideNav('show');
     },
   },
+  mounted:function () {
+    document.title = "Yul's Music"
+    this.$store.commit('loadingState',false)
+  },
   components: {
     card
   }

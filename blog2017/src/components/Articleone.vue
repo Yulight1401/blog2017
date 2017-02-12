@@ -20,8 +20,8 @@
     <div class="parallax-container col s12">
         <div class="parallax"><img v-bind:src = "imgSrc"></div>
     </div>
-    <comment v-bind:articleId="artData.id"></comment>
-    <inputpanel></inputpanel>
+    <comment v-bind:articleId="artData.id" v-bind:render="render"></comment>
+    <inputpanel v-on:commit="renderComment"></inputpanel>
   </div>
 </template>
 
@@ -40,22 +40,15 @@ export default {
         id: 1,
         content:'  ',//由于刚开始content为undefiend所以会引起slice属性不存在的bug
       },
-      parsecontent: ''
+      parsecontent: '',
+      render:0,
+      loading:true
     }
   },
   mounted: function () {
     $('.parallax').parallax();
     let vm = this
-    Article.getOne(this.$route.params,function(data,status){
-      vm.artData = data.data
-      vm.parsecontent = Md.toHTML(vm.artData.content)
-      setTimeout(function(){
-      $('#parsecontent img').addClass('materialboxed mx_width')
-      $('.materialboxed').materialbox()
-      },100)
-      },function(err){
-      Materialize.toast('获取文章信息错误：'+err.statusText, 4000)
-    })
+    vm.getArticle()
     vm.countArt()
   },
   computed: {
@@ -74,6 +67,25 @@ export default {
     }
   },
   methods: {
+    renderComment: function () {
+       this.render++
+    },
+    getArticle: function () {
+    let vm = this
+    Article.getOne(this.$route.params,function(data,status){
+      vm.artData = data.data
+      vm.$store.commit('loadingState',false)
+      vm.parsecontent = Md.toHTML(vm.artData.content)
+      document.title = data.data.title
+      setTimeout(function(){
+      $('#parsecontent img').addClass('materialboxed mx_width')
+      $('.materialboxed').materialbox()
+      vm.render++
+      },100)
+      },function(err){
+      Materialize.toast('获取文章信息错误：'+err.statusText, 4000)
+    })
+    },
     countArt: function () {
       Article.count(this.$route.params,function(){
         console.log('')

@@ -1,6 +1,6 @@
 /* eslint-disable */
 let $=require('jquery');
-let API='http://127.0.0.1:8082/';
+let API='http://yulstudio.cn:8082/';
 class user {
 	constructor() {
   }

@@ -4,7 +4,9 @@
 
     <!-- Page Layout here -->
     <div class="row">
-
+      <div class="progress" v-show="loading">
+          <div class="indeterminate" ></div>
+      </div>
       <div class="col l3"> <!-- Note that "m4 l3" was added -->
         <!-- Grey navigation panel
 
@@ -41,29 +43,33 @@
 import sidenav from './components/Sidenav';
 import footerbar from './components/Footerbar'
 import card from './components/Card'
-import loader from './components/Loader'
-import parallax from './components/parallax'
-import carousel from './components/Carousel'
 window.$ = window.jQuery = require('jquery');
 
 export default {
   name: 'app',
-  mounted: () =>{
+  mounted:function () {
     $('.carousel').carousel();
     $('.parallax').parallax();
+    this.$store.commit('loadingState',false)
+  },
+  computed:{
+    loading: function () {
+      return this.$store.state.loading
+    }
   },
   components: {
     sidenav,
     footerbar,
     card,
-    loader,
-    carousel,
-    parallax
   },
 };
 </script>
 
 <style>
+body{
+  overflow-x:hidden
+}
+
 body::-webkit-scrollbar-track
 {
 	-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);

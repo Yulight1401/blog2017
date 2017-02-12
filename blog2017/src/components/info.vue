@@ -5,25 +5,25 @@
   <div class="row">
     <div class="input-field col s12">
       <input disabled id="username" type="text" class="validate"  v-model="username">
-      <label for="username"  v-bind:data-error="userror">用户名</label>
+      <label for="username"  v-bind:data-error="userror" class="active">用户名</label>
     </div>
   </div>
   <div class="row">
     <div class="input-field col s12">
       <input id="github" type="text" class="validate" v-bind:class="{invalid:githubok}" v-model="github">
-      <label for="github" data-error="不能为空">Github</label>
+      <label for="github" data-error="不能为空" class="active">Github</label>
     </div>
   </div>
   <div class="row">
     <div class="input-field col s12">
       <input id="wechat" type="text" class="validate" v-model="wechat" v-bind:class="{invalid:wechatok}">
-      <label for="wechat" data-error="不能为空">微信</label>
+      <label for="wechat" data-error="不能为空" class="active">微信</label>
     </div>
   </div>
   <div class="row">
     <div class="input-field col s12">
       <input id="info" type="text" class="validate" v-model="info">
-      <label for="info">签名*</label>
+      <label for="info" class="active">签名*</label>
     </div>
   </div>
   <div class="row">
@@ -88,13 +88,16 @@ export default {
     },
     getInfo: function () {
       let vm = this
-      User.getInfo(vm.$route.params, function(data,status){
+      let userData
+      Cookie.get('user') == '' ? function() {Materialize.toast('需要再次登录', 4000);vm.$router.push('/login')}() :userData = JSON.parse(Cookie.get('user'))
+      User.getInfo({name:userData.username}, function(data,status){
         data.status == 'error' ? Materialize.toast('获取用户信息错误：'+data.info, 4000) : data = data.data
         vm.username = data.username
         vm.github = data.github
         vm.wechat = data.wechat
         vm.info = data.info
         vm.userid = data.id
+        vm.$store.commit('loadingState', false)
       }, function(err){
         Materialize.toast('获取用户信息错误：'+err.statusText, 4000)
       })

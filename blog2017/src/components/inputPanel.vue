@@ -41,13 +41,14 @@ export default {
       Cookie.get('user') == '' ? function() {Materialize.toast('需要再次登录', 4000);vm.$router.push('/login')}() :userData = JSON.parse(Cookie.get('user'))
       vm.$store.state.commentData.type == 'article' ? commentData = {name:userData.username,fatherid:'-1',sonid:vm.$store.state.commentData.id,create:SQLDT(),title:'',content:vm.content,for:0}:
       function(){
-        commentData = {name:userData.username,fatherid:vm.$store.state.commentData.id,sonid:'-1',create:SQLDT(),title:'',content:vm.content,for:0}
+        commentData = {name:userData.username+' 回复 ['+vm.$store.state.commentData.name+']',fatherid:vm.$store.state.commentData.fid,sonid:'-1',create:SQLDT(),title:'',content:vm.content,for:0}
         Comment.count({id:vm.$store.state.commentData.id},function(){},function(){})
       }()
       User.login(userData,function(data,status){
         token = data['access_token']
         Comment.create(commentData,token,function(data,status){
           Materialize.toast('评论成功', 4000)
+          vm.$emit('commit')
           $('#modal1').modal('close')
         },function(err){
           Materialize.toast('错误:'+err.statusText, 4000)

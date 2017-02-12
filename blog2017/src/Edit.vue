@@ -51,7 +51,7 @@
       </div>
     </div>
     <div class="row" style="text-align:center">
-  <a class="waves-effect waves-light btn"  v-on:click="postArticle">上传</a>
+  <a class="waves-effect waves-light btn"  v-on:click="commit">上传</a>
     </div>
   </form>
 
@@ -63,7 +63,7 @@
   <h6 class="subtitle">{{subtitle}}</h6>
   </div>
   <hr></hr>
-  <div id='pre_content' class="flow-text content" v-html="precontent">
+  <div id='pre_content' class=" content" v-html="precontent">
   </div>
   </div>
   <div class="col s12">
@@ -91,7 +91,9 @@ export default {
     imgsrc: '../static/images/bg4.jpg',
     author: '',
     articleclass: '1',
-    content: '',
+    content: ' ',
+    create:'',
+    id: '',
     options: [
       { text: '前端', value: '1' },
       { text: '后端', value: '2' },
@@ -115,6 +117,11 @@ export default {
     $(window).bind('beforeunload',function(){return '您输入的内容尚未保存，确定离开此页面吗？';});
     this.$route.params.type == 'revise' ? this.getArticle(this.$route.params.id) : null ;
   },
+  watch: {
+    '$route': function (to, from) {
+      this.$route.params.type == 'revise' ? this.getArticle(this.$route.params.id) : null ;
+    }
+  },
   components: {
   },
   methods: {
@@ -131,6 +138,9 @@ export default {
         Materialize.toast('你上传的是假文件', 4000,'',function(){})
       }
     },
+    commit: function () {
+      this.$route.params.type == 'revise' ? this.reviseArticle() : this.postArticle()  ;
+    },
     postArticle: function () {
       this.articleclass=$('select')[0].value
       let vm = this
@@ -140,23 +150,45 @@ export default {
       User.login(userData,function(data,status){
         token = data['access_token']
         Article.create(articleData,token,function(data,status){
-          Materialize.toast('发表成功', 4000)
+          data.status == 'success' ? Materialize.toast('发表成功', 4000) :Materialize.toast('发表失败：'+data.info, 4000)
         },function(err){
           Materialize.toast('错误:'+err.statusText, 4000)
         })
-      },function(){})
+      },function(err){
+        Materialize.toast('错误:'+err.statusText, 4000)
+      })
+    },
+    reviseArticle: function () {
+      this.articleclass=$('select')[0].value
+      let vm = this
+      let userData, token = ''
+      let articleData = {id:vm.id,title: vm.title, subtitle: vm.subtitle, img: vm.imgsrc, author: vm.author, create: vm.create, update: SQLDT(), content: vm.content, class: vm.articleclass}
+      Cookie.get('user') == '' ? function() {Materialize.toast('需要再次登录', 4000);vm.$router.push('/login')}() :userData = JSON.parse(Cookie.get('user'))
+      User.login(userData,function(data,status){
+        token = data['access_token']
+        Article.revise(articleData,token,function(data,status){
+          data.status == 'success' ? Materialize.toast('修改成功', 4000) :Materialize.toast('发表失败：'+data.info, 4000)
+          },function(err){
+          Materialize.toast('错误:'+err.statusText, 4000)
+          })
+    },function(err){
+      Materialize.toast('错误:'+err.statusText, 4000)
+    })
     },
     getArticle: function (id) {
       let vm = this
       Article.getOne({id:id},function (datas){
         let data=datas.data
-        datas.status == 'error' ? function(){Materialize.toast('你改到了假文章', 4000);vm.$router.push('/edit/create/0')}() : () =>{} ;
+        datas.status == 'error' ? function(){Materialize.toast('你改到了假文章,自动跳转...', 4000);vm.$router.push('/edit/create/0')}() : function(){
         vm.title = data.title
         vm.subtitle = data.subtitle
         vm.author = data.author
         vm.content = data.content
         vm.imgsrc = data.img
+        vm.create = data.create
         vm.articleclass = data.class
+        vm.id = data.id
+        }();
       },function(err){
         Materialize.toast('假的:'+err.statusText, 4000)
       })

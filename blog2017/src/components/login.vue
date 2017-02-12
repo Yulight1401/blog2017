@@ -40,6 +40,10 @@ export default {
       unok: false,
     }
   },
+  mounted:function () {
+    document.title = "Login.Yul's Blog"
+    this.$store.commit('loadingState',false)
+  },
   methods: {
     login: function (){
       this.username.length == 0 ? this.unok = true : this.unok = false ;

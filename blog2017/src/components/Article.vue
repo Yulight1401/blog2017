@@ -22,6 +22,9 @@ export default {
     let vm = this
     Article.getAll(this.$route.params,function(data,status){
       vm.artDatas = data.data
+      document.title = "Yul's Articles"
+      vm.$store.commit('loadingState', false)
+      data.data.length == 0 ? Materialize.toast('暂时没有文章哦～', 4000) : null
     },function(err){
       Materialize.toast('获取文章信息错误：'+err.statusText, 4000)
     })
@@ -31,6 +34,8 @@ export default {
       let vm = this
       Article.getAll(to.params,function(data,status){
         vm.artDatas = data.data
+        vm.$store.commit('loadingState', false)
+        data.data.length == 0 ? Materialize.toast('暂时没有文章哦～', 4000) : null
       },function(err){
         Materialize.toast('获取文章信息错误：'+err.statusText, 4000)
       })

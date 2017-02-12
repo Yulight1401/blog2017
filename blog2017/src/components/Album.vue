@@ -21,15 +21,22 @@
 
 export default {
   name: 'album',
-  mounted:() =>{
+  mounted:function () {
     $('.materialboxed').materialbox();
     Materialize.showStaggeredList('#staggered-test')
+    document.title = "Yul's Album"
+    this.$store.commit('loadingState',false)
   },
   methods: {
     show: () => {
       console.log('???');
       $('.button-collapse').sideNav('show');
     },
+  },
+  watch :{
+    '$route': function (to,from) {
+      this.$store.commit('loadingState',false)
+    }
   },
   components: {
 

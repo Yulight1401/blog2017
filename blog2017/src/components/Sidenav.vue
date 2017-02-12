@@ -62,6 +62,12 @@
 <router-link to="/regist" tag="li" v-if="loginState" class=""><div class="collapsible-header"><i class="material-icons" ><svg style="width:24px;height:24px" viewBox="0 0 24 24">
 <path fill="#000000" d="M15,14C12.33,14 7,15.33 7,18V20H23V18C23,15.33 17.67,14 15,14M6,10V7H4V10H1V12H4V15H6V12H9V10M15,12A4,4 0 0,0 19,8A4,4 0 0,0 15,4A4,4 0 0,0 11,8A4,4 0 0,0 15,12Z" />
 </svg></i>Regist</div></router-link>
+<router-link to="/login" v-if="loginState" tag="li" class=""><div class="collapsible-header"><i class="material-icons" ><svg style="width:24px;height:24px" viewBox="0 0 24 24">
+ <path fill="#000000" d="M19,3H5C3.89,3 3,3.89 3,5V9H5V5H19V19H5V15H3V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V5C21,3.89 20.1,3 19,3M10.08,15.58L11.5,17L16.5,12L11.5,7L10.08,8.41L12.67,11H3V13H12.67L10.08,15.58Z" />
+</svg></i>Login</div></router-link>
+<router-link to="/info" tag="li" v-if="!loginState" class=""><div class="collapsible-header"><i class="material-icons" ><svg style="width:24px;height:24px" viewBox="0 0 24 24">
+    <path fill="#000000" d="M12,4A4,4 0 0,1 16,8A4,4 0 0,1 12,12A4,4 0 0,1 8,8A4,4 0 0,1 12,4M12,14C16.42,14 20,15.79 20,18V20H4V18C4,15.79 7.58,14 12,14Z" />
+</svg></i>Account</div></router-link>
    </ul>
  </li>
   </ul>
@@ -91,6 +97,7 @@ export default {
     '$route' (to,from){
       //console.log(to)
       //alert(document.body.scrollWidth)
+      this.$store.commit('loadingState', true)
       document.body.scrollWidth <= 994 ? $('.button-collapse').sideNav('hide') : ()=>{}
     }
   },

@@ -25,15 +25,18 @@ const store = new Vuex.Store({
   state: {
     login: false,
     commentData: {
-    }
+    },
+    loading: true
   },
   mutations: {
     loginState (state, stateText) {
       state.login = stateText
     },
     commentState (state, obj) {
-      state.commentData.type = obj.type
-      state.commentData.id = obj.id
+      state.commentData = obj
+    },
+    loadingState (state, stateText){
+      state.loading = stateText
     }
   }
 })
@@ -48,7 +51,7 @@ let routes = [
       {path: '/mv',component:mv},
       {path: '/regist', component:regist},
       {path: '/login', component:login},
-      {path: '/info/:name', component:info}]
+      {path: '/info', component:info}]
     },
     {path: '/manage', name: 'manage', component: (resolve) => {require(['./Manage.vue'],resolve)}},
     {path: '/edit/:type/:id' ,name: 'edit', component: (resolve) => {require(['./Edit.vue'],resolve)}},

@@ -69,6 +69,7 @@
 /* eslint-disable */
 import {User} from '../common/http.js'
 import Cookie from '../common/cookie.js'
+import SQLDT from '../common/sqldatetime.js'
 
 export default {
   name: 'regist',
@@ -88,8 +89,10 @@ export default {
       info: ""
     }
   },
-  mounted: () => {
-    $('.modal').modal();
+  mounted:function ()  {
+    $('.modal').modal()
+    document.title = "Regist.Yul's Blog"
+    this.$store.commit('loadingState',false)
   },
   methods: {
     validform: function () {
@@ -106,7 +109,7 @@ export default {
     regist: function () {
       this.loading = true
       let vm=this
-      let data = {username:this.username, password:this.password, github:this.github, wechat:this.wechat, info:this.info}
+      let data = {username:this.username, password:this.password,create: SQLDT(), github:this.github, wechat:this.wechat, info:this.info}
       User.create(data,function(data){
         data.status=='error' ?
         function(){
@@ -122,6 +125,7 @@ export default {
           vm.loading = false
           let user={username:vm.username,password:vm.spassword}
           Cookie.set('user',JSON.stringify(user),2)
+          vm.$store.commit('loginState',false)
         }()
       },function(err){
         $('#userknow').modal('close')
