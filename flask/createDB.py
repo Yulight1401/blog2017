@@ -5,7 +5,7 @@ def main():
     conn=mysql.connector.connect(host='127.0.0.1',user='root', password='yuliang',port=3306)
     cursor=conn.cursor()
     print(cursor)
-    cursor.execute("create database if NOT EXISTS blog2017")
+    cursor.execute("create database if NOT EXISTS blog2017 DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci")
     cursor.execute('use blog2017')
     cursor.execute('create table if not exists user('
                    '_id int PRIMARY KEY auto_increment,'
@@ -14,6 +14,7 @@ def main():
                    '_github VARCHAR(20),'
                    '_wechat VARCHAR(20),'
                    '_info VARCHAR(200),'
+                   '_create DATETIME,'
                    '_access int not null)')
     print('create user table')
 

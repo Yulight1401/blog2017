@@ -1,16 +1,12 @@
 import pymysql
 import sys
 
-INSERTHR = 'INSERT INTO member(username, power_limit, group_name) VALUES(%s, %s, %s)'
-SEARCHNEWERID =  "SELECT enter_id FROM newer WHERE telephone = %s"
-SEARCHNEWER = "SELECT COUNT(*) FROM newer WHERE telephone = %s"
-UPDATEHR = "UPDATE member SET password = %s WHERE username = %s"
-
-INSERTUSER = 'INSERT INTO user(_name, _password,_github,_wechat,_info,_access) VALUES(%s, %s, %s, %s, %s, %s)'
-UPDATEUSER='UPDATE user SET password=%s,_github=%s,_info=%s,_wechat=%s WHERE _id=%s'
+INSERTUSER = 'INSERT INTO user(_name, _password,_github,_wechat,_info,_create,_access) VALUES(%s, %s, %s, %s, %s, %s, %s)'
+UPDATEUSER='UPDATE user SET _password=%s,_github=%s,_wechat=%s,_info=%s WHERE _id=%s'
 SEARCHUSER = "SELECT * FROM user WHERE _name=%s"
 DELETEUSER='DELETE FROM user WHERE _id=%s'
 SEARCHUSERBYID='SELECT * FROM user WHERE _id=%s'
+SEARCHALLUSER='SELECT * FROM user'
 
 INSERTARTICLE='INSERT INTO articles(_img,_subtitle,_author,_create,_update,_title,_content,_class,_counts) VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s)'
 SEARCHCLASSARTICLES='SELECT * FROM articles WHERE _class = %s '
@@ -18,12 +14,14 @@ SEARCHONEARTICLE='SELECT * FROM articles WHERE _id=%s '
 UPDATEARTICLE='UPDATE articles SET _img=%s,_subtitle=%s, _author=%s,_update=%s,_title=%s, _content=%s, _class=%s WHERE _id=%s'
 COUNTARTICLE='UPDATE articles SET _counts=_counts+1 WHERE _id=%s'
 DELETEARTICLE='DELETE FROM ariticles WHERE _id=%s'
+SEARCHALLARTICLE='SELECT * FROM articles'
 
-INSERTCOMMENT='INSERT INTO comment (_name,_content,_create,_fatherid,_sonid,_for) VALUES(%s,%s,%s,%s,%s,%s)'
+INSERTCOMMENT='INSERT INTO comment(_name,_content,_create,_fatherid,_sonid,_for) VALUES(%s,%s,%s,%s,%s,%s)'
 SEARCHSONCOMMENT='SELECT * FROM comment WHERE _fatherid=%s'
-SEARCHONECOMMENT='SELECT * FROM comment WHERE _id=%s'
+SEARCHONECOMMENT='SELECT * FROM comment WHERE _sonid=%s'
 DELETECOMMENT='DELETE FROM comment WHERE _id=%s'
 COUNTCOMMENT='UPDATE comment SET _for=_for+1 WHERE _id=%s'
+SEARCHALLCOMMENT='SELECT * FROM comment'
 
 reload(sys)
 sys.setdefaultencoding("utf8")
@@ -43,11 +41,11 @@ class user():
         print(sta)
         print('status:'+str(sta=='None'))
         if str(sta)=='None':
-            sta=cursor.execute(INSERTUSER,(data['name'],data['password'],data['github'],data['wechat'],data['info'],0))
+            sta=cursor.execute(INSERTUSER,(data['name'],data['password'],data['github'],data['wechat'],data['info'],data['create'],0))
             print(sta)
             conn.commit()
             conn.close()
-            return {'status':'success'，'code':sta}
+            return {'status':'success','code':sta}
         else:
             print(sta)
             conn.commit()
@@ -88,7 +86,7 @@ class user():
         conn = init_mysql()
         cursor = conn.cursor()
         sta = cursor.execute(UPDATEUSER,
-                            (data['password'],data['github'],data['wechat'],data['info'],int(data['id'])))
+                            (data['password'],data['github'],data['wechat'],data['info'],data['id']))
         conn.commit()
         conn.close()
         return sta
@@ -109,7 +107,16 @@ class user():
         data=cursor.fetchone()
         conn.commit()
         conn.close()
-        return data[6]
+        return data[7]
+
+    def serach_all(self):
+        conn = init_mysql()
+        cursor = conn.cursor()
+        cursor.execute(SEARCHALLUSER,())
+        datas=cursor.fetchall()
+        conn.commit()
+        conn.close()
+        return datas
 
 class articles():
     """docstring for ."""
@@ -157,6 +164,15 @@ class articles():
         conn.close()
         return datas
 
+    def serach_all(self):
+        conn = init_mysql()
+        cursor = conn.cursor()
+        cursor.execute(SEARCHALLARTICLE,())
+        datas=cursor.fetchall()
+        conn.commit()
+        conn.close()
+        return datas
+
     def update(self,**data):
         conn = init_mysql()
         cursor = conn.cursor()
@@ -184,11 +200,11 @@ class comment():
         conn.close()
         return data
 
-    def search_one(self,id):
+    def search_article(self,id):
         conn=init_mysql()
         cursor=conn.cursor()
         cursor.execute(SEARCHONECOMMENT,(id))
-        data = cursor.fetchone()
+        data = cursor.fetchall()
         conn.commit()
         conn.close()
         return data
@@ -208,3 +224,12 @@ class comment():
         conn.commit()
         conn.close()
         return status
+
+    def serach_all(self):
+        conn = init_mysql()
+        cursor = conn.cursor()
+        cursor.execute(SEARCHALLCOMMENT,())
+        datas=cursor.fetchall()
+        conn.commit()
+        conn.close()
+        return datas
