@@ -1,5 +1,15 @@
 ## 将该博客部署到服务器的正确姿势：
 
+### 需要修改的内容
+
+`@ model.py 修改mysql name&password`
+
+`@ run.py 修改host = 0.0.0.0`
+
+`@ http.js 修改domain = 'Your domain address'`
+
+`@ sideNav.vue 修改自己的基本样式`
+
 ### 1.服务器安装python模块 ： 
 
 `pip install flask,flask-jwt,mysql-connector,pymsql,`
