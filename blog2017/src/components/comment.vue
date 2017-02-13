@@ -15,18 +15,19 @@
   </div>
   <ul class="collapsible popout " data-collapsible="expandable">
   <li v-for="item in Datas">
-    <div class="collapsible-header">{{item.name}}<span class="badge"><a v-on:click.stop="reComment" v-bind:data-id="item.id" v-bind:data-fid="item.id" v-bind:data-usname="item.name" class="waves-effect waves-teal btn-flat">回复</a></span> <span class="badge">评论数：{{item.for}}</span><span class="badge" >发布于：{{item.create}}</span></div>
-
+    <div class="collapsible-header">{{item.name}}<span class="badge"><a v-on:click.stop="reComment" v-bind:data-id="item.id" v-bind:data-fid="item.id" v-bind:data-usname="item.name" class="waves-effect waves-teal btn-flat">回复</a></span> <span class="badge">评论数：{{item.for}}</span></div>
     <div class="collapsible-body">
-    <p>{{item.content}}</p>
-    <hr></hr>
-
+    <br>
+    <span>&nbsp&nbsp&nbsp&nbsp{{item.content}}</span>
+    <br>
+    <small style="color:gray">&nbsp&nbsp&nbsp&nbsp&nbsp发布于：{{item.create}}</small>
     <ul class="collection">
     <li class="collection-item avatar" v-for="its in item.sonData">
-      <span class="title">{{its.name}} </span>
+    <hr></hr>
+      <span class="title">{{its.name}}: </span>
       <br>
       {{its.content}}
-      <br><span class="badge">评论数：{{its.for}}</span><span class="badge" >发布于：{{its.create}}</span>
+      <br><small style="color:gray">评论数：{{its.for}}&nbsp 发布于：{{its.create}}</small>
       <a class="secondary-content"><span class="badge"><a v-on:click.stop="reComment" v-bind:data-id="its.id" v-bind:data-fid="item.id" v-bind:data-usname="its.name" class="waves-effect waves-light btn">回复</a></a>
     </li>
     </ul>

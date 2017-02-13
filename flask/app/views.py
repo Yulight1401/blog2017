@@ -10,7 +10,7 @@ import os
 import time
 import base64
 
-UPLOAD_FOLDER='../blog2017/static/images'
+UPLOAD_FOLDER='../static/images'
 ALLOWED_EXTENSIONS = set(['txt','png','jpg','xls','JPG','PNG','xlsx','gif','GIF'])
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['MAX_CONTENT_LENGTH'] = 5 * 1024 * 1024
@@ -30,6 +30,8 @@ def authenticate(username, password):
 def identity(payload):
     user_id = payload['identity']
     access=User.getaccess(user_id)
+    print('access1')
+    print(access)
     return {'id':user_id,'access':access}
 
 app.config['SECRET_KEY'] = 'yuliang'
@@ -100,7 +102,7 @@ def article_getall():
     datas=Articles.serach_muti(id);
     data=list()
     for i in datas:
-        map={'id':i[0],'img':i[1],'subtitle':i[2],'class':i[3],'author':i[4],'create':i[5],'update':i[6],'counts':i[7],'title':i[8],'content':i[9]}
+        map={'id':i[0],'img':i[1],'subtitle':i[2],'class':i[3],'author':i[4],'create':str(i[5]),'update':str(i[6]),'counts':i[7],'title':i[8],'content':i[9]}
         data.append(map)
     return jsonify({'status':'success','data':data})
 
@@ -110,7 +112,7 @@ def article_all():
     datas=Articles.serach_all();
     data=list()
     for i in datas:
-        map={'id':i[0],'img':i[1],'subtitle':i[2],'class':i[3],'author':i[4],'create':i[5],'update':i[6],'counts':i[7],'title':i[8],'content':i[9]}
+        map={'id':i[0],'img':i[1],'subtitle':i[2],'class':i[3],'author':i[4],'create':str(i[5]),'update':str(i[6]),'counts':i[7],'title':i[8],'content':i[9]}
         data.append(map)
     return jsonify({'status':'success','data':data})
 
@@ -120,7 +122,7 @@ def article_getone():
     i=Articles.search_one(id)
     print(i)
     if str(i) != 'None':
-        map={'id':i[0],'img':i[1],'subtitle':i[2],'class':i[3],'author':i[4],'create':i[5],'update':i[6],'counts':i[7],'title':i[8],'content':i[9]}
+        map={'id':i[0],'img':i[1],'subtitle':i[2],'class':i[3],'author':i[4],'create':str(i[5]),'update':str(i[6]),'counts':i[7],'title':i[8],'content':i[9]}
         return jsonify({'status':'success','data':map})
     else :
         return jsonify({'status':'error','data':''})
@@ -146,6 +148,8 @@ def article_create():
 @app.route('/article/revise', methods = ['POST'])
 @jwt_required()
 def article_revise():
+    print('access:')
+    print(current_identity['access'])
     if current_identity['access'] == 9 or current_identity['access'] == 8 :
         status=Articles.update(**request.form)
         return jsonify({'status':'success','code':status})
@@ -169,7 +173,8 @@ def comment_search():
     datas=Comment.search_son(request.args.get('id', ''))
     cuple=list()
     for data in datas:
-        map={"id":data[0],"content":data[1],"name":data[2],"create":data[3],"fatherid":data[4],"sonid":data[5],"for":data[6]}
+        dateTime = str(data[3])
+        map={"id":data[0],"content":data[1],"name":data[2],"create":dateTime[2:25],"fatherid":data[4],"sonid":data[5],"for":data[6]}
         cuple.append(map)
     return jsonify({'status':'success','data':cuple})
 
@@ -178,7 +183,8 @@ def comment_one():
     datas=Comment.search_article(request.args.get('id', ''))
     cuple=list()
     for data in datas:
-        map={"id":data[0],"content":data[1],"name":data[2],"create":data[3],"fatherid":data[4],"sonid":data[5],"for":data[6]}
+	dateTime = str(data[3])
+        map={"id":data[0],"content":data[1],"name":data[2],"create":dateTime[2:25],"fatherid":data[4],"sonid":data[5],"for":data[6]}
         cuple.append(map)
     return jsonify({'status':'success','data':cuple})
 
