@@ -34,7 +34,7 @@
           </div>
         </div>
         <div class="row">
-            <select class="input-field col s12" v-model='articleclass'>
+            <select id="articleclass" class="input-field col s12" >
             <option v-for="option in options" v-bind:value="option.value">
             {{ option.text }}
             </option>
@@ -90,7 +90,6 @@ export default {
     subtitle: '',
     imgsrc: '../static/images/bg4.jpg',
     author: '',
-    articleclass: '1',
     content: ' ',
     create:'',
     id: '',
@@ -142,10 +141,10 @@ export default {
       this.$route.params.type == 'revise' ? this.reviseArticle() : this.postArticle()  ;
     },
     postArticle: function () {
-      this.articleclass=$('select')[0].value
       let vm = this
       let userData, token = ''
-      let articleData = {title: vm.title, subtitle: vm.subtitle, img: vm.imgsrc, author: vm.author, create: SQLDT(), update: SQLDT(), content: vm.content, class: vm.articleclass,counts: '0'}
+      let articleData = {title: vm.title, subtitle: vm.subtitle, img: vm.imgsrc, author: vm.author, create: SQLDT(), update: SQLDT(), content: vm.content, class: document.getElementById('articleclass').value,counts: '0'}
+      // console.log(articleData)
       Cookie.get('user') == '' ? function() {Materialize.toast('需要再次登录', 4000);vm.$router.push('/login')}() :userData = JSON.parse(Cookie.get('user'))
       User.login(userData,function(data,status){
         token = data['access_token']
@@ -159,10 +158,9 @@ export default {
       })
     },
     reviseArticle: function () {
-      this.articleclass=$('select')[0].value
       let vm = this
       let userData, token = ''
-      let articleData = {id:vm.id,title: vm.title, subtitle: vm.subtitle, img: vm.imgsrc, author: vm.author, create: vm.create, update: SQLDT(), content: vm.content, class: vm.articleclass}
+      let articleData = {id:vm.id,title: vm.title, subtitle: vm.subtitle, img: vm.imgsrc, author: vm.author, create: vm.create, update: SQLDT(), content: vm.content, class: document.getElementById('articleclass').value}
       Cookie.get('user') == '' ? function() {Materialize.toast('需要再次登录', 4000);vm.$router.push('/login')}() :userData = JSON.parse(Cookie.get('user'))
       User.login(userData,function(data,status){
         token = data['access_token']

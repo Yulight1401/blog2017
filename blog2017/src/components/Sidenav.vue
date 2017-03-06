@@ -95,7 +95,7 @@ export default {
       //console.log(to)
       //alert(document.body.scrollWidth)
       this.$store.commit('loadingState', true)
-      document.body.scrollWidth <= 994 ? $('.button-collapse').sideNav('hide') : ()=>{}
+      document.body.scrollWidth <= 1024 ? $('.button-collapse').sideNav('hide') : ()=>{}
     }
   },
   methods: {

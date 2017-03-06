@@ -5,9 +5,9 @@
     <div class="card-image waves-effect waves-block waves-light">
       <img class="activator" v-bind:src="imgSrc" >
     </div>
-    <div class="card-content">
+    <div class="card-content" >
       <span class="card-title activator grey-text text-darken-4">{{articleData.title}}<i class="material-icons right">more_vert</i></span>
-      <p><router-link v-bind:to="articleSrc" tag="a">阅读</router-link></p>
+      <p style="position:absolute;bottom:18px;width:78%;background-color:white;"><router-link v-bind:to="articleSrc" tag="a">阅读</router-link></p>
     </div>
     <div class="card-reveal">
       <span class="card-title grey-text text-darken-4">{{articleData.title}}<i class="material-icons right">close</i></span>

@@ -57,6 +57,7 @@ export default {
       User.login(userdata,function(data,status){
         vm.loading = false
         Cookie.set('user',JSON.stringify(userdata),2)
+        vm.$store.commit('loginState',false)
         vm.$router.push('/article/1')
       },function(errMsg){
         vm.psok=true;

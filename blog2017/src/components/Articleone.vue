@@ -1,5 +1,8 @@
 <template>
   <div id="" class="row">
+  <div style="display:none">
+    <img v-bind:src = "imgSrc"/>
+  </div>
   <div class="fixed-action-btn ">
     <a class="btn-floating btn-large grey waves-effect" v-on:click="articleComment">
       <i class="large material-icons">mode_edit</i>
@@ -12,7 +15,7 @@
     <h6 class="subtitle">{{artData.subtitle}}</h6>
     </div>
     <hr></hr>
-    <div class="content" id='parsecontent' v-html="parsecontent">
+    <div class="Mycontent" id='parsecontent' v-html="parsecontent">
     </div>
     <hr></hr>
     <div class="foot"><span class="badge" data-badge-caption="">阅读量：{{artData.counts}}</span><span class="badge" >更新于：{{artData.update}}</span><span class="badge" >发布于：{{artData.create}}</span></div>
@@ -77,6 +80,7 @@ export default {
       vm.$store.commit('loadingState',false)
       vm.parsecontent = Md.toHTML(vm.artData.content)
       document.title = data.data.title
+      document.subtitle = data.data.subtitle
       setTimeout(function(){
       $('#parsecontent img').addClass('materialboxed mx_width')
       $('.materialboxed').materialbox()
@@ -111,10 +115,12 @@ export default {
 display:block;
 text-align:center!important;
 }
-.content{
+.Mycontent{
   font-size:16px;
   text-indent:32px;
-  font-weight:light;
+  font-weight: normal;
+  max-width: 100%;
+  overflow: hidden;
 }
 .card{
   padding:8px;

@@ -34,6 +34,7 @@
   </li>
 
   </ul>
+  <div class="ds-thread" v-bind:data-thread-key="articleId" data-title="Wtitle" data-url="Wurl"></div>
   </div>
 </template>
 
@@ -45,8 +46,10 @@ export default {
   name: 'comment',
   data: function () {
     return{
-      Datas:[],
-      loading:true
+      Datas: [],
+      loading: true,
+      Wtitle: window.title,
+      Wurl: window.location.href
     }
   },
   created : function () {
@@ -57,6 +60,15 @@ export default {
     $('.collapsible').collapsible();
     $('.parallax').parallax();
     this.getData()
+    window.duoshuoQuery = {short_name:"yulstudio"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.unstable.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0]
+		 || document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
   },
   watch:{
     'render': function(){
@@ -76,7 +88,6 @@ export default {
         fData = data.data
         fData.length == 0 ? vm.loading=false : null ;
         for( let item in fData){
-        console.log(item,fData.length)
         Comment.getByson({id:fData[item].id},function(data,status){
           let tempData = data.data
           fData[item].sonData = tempData
