@@ -16,7 +16,14 @@ function getCookie(c_name){
 　　　　}
 　　　　return ""
 }
+function delCookie(c_name) {
+  var exp = new Date();
+  exp.setTime(exp.getTime() + (-1 * 24 * 60 * 60 * 1000));
+  var cval = GetCookieValue(name);
+  document.cookie = name + "=" + cval + "; expires=" + exp.toGMTString();
+}
 let Cookie={};
-Cookie.set=setCookie;
-Cookie.get=getCookie
+Cookie.set = setCookie
+Cookie.delete = delCookie
+Cookie.get = getCookie
 export default Cookie;

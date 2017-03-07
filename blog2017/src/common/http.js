@@ -42,6 +42,25 @@ class user {
         }
     });
 	}
+	delete(data,token,successFunc,failFunc){
+		$.ajax({
+        type: "GET",
+        url: API+"user/delete",
+        // The key needs to match your method's input parameter (case-sensitive).
+        data: data,
+        async: true,
+        dataType: "json",
+        beforeSend: function (xhr) {
+					xhr.setRequestHeader ("Authorization", "JWT "+token);
+				},
+        success: function(data,status){
+					successFunc(data,status);
+        },
+        error: function(errMsg) {
+					failFunc(errMsg);
+        }
+    });
+	}
 	revise (data,token,successFunc,failFunc) {
 		$.ajax({
         type: "POST",
@@ -71,6 +90,25 @@ class user {
         dataType: "json",
         beforeSend: function (xhr) {
           //xhr.setRequestHeader ("Content-Type", "application/json")
+        },
+        success: function(data,status){
+					successFunc(data,status);
+        },
+        error: function(errMsg) {
+					failFunc(errMsg);
+        }
+    });
+	}
+	getAll (data,token,successFunc,failFunc) {
+		$.ajax({
+        type: "GET",
+        url: API+"user/all",
+        // The key needs to match your method's input parameter (case-sensitive).
+        data: data,
+        async: true,
+        dataType: "json",
+        beforeSend: function (xhr) {
+          xhr.setRequestHeader ("Authorization", "JWT "+token);
         },
         success: function(data,status){
 					successFunc(data,status);
@@ -198,6 +236,25 @@ class article{
         }
     });
 	}
+	getAlls (data,token,successFunc,failFunc) {
+		$.ajax({
+        type: "GET",
+        url: API+"articles/all",
+        // The key needs to match your method's input parameter (case-sensitive).
+        data: data,
+        async: true,
+        dataType: "json",
+        beforeSend: function (xhr) {
+          xhr.setRequestHeader ("Authorization", "JWT "+token);
+        },
+        success: function(data,status){
+					successFunc(data,status);
+        },
+        error: function(errMsg) {
+					failFunc(errMsg);
+        }
+    });
+	}
 }
 class comment{
 	constructor() {
@@ -289,6 +346,25 @@ class comment{
         beforeSend: function (xhr) {
 					xhr.setRequestHeader ("Authorization", "JWT "+token);
 				},
+        success: function(data,status){
+					successFunc(data,status);
+        },
+        error: function(errMsg) {
+					failFunc(errMsg);
+        }
+    });
+	}
+	getAll (data,token,successFunc,failFunc) {
+		$.ajax({
+        type: "GET",
+        url: API+"comment/all",
+        // The key needs to match your method's input parameter (case-sensitive).
+        data: data,
+        async: true,
+        dataType: "json",
+        beforeSend: function (xhr) {
+          xhr.setRequestHeader ("Authorization", "JWT "+token);
+        },
         success: function(data,status){
 					successFunc(data,status);
         },

@@ -91,7 +91,7 @@ export default {
       let userData
       Cookie.get('user') == '' ? function() {Materialize.toast('需要再次登录', 4000);vm.$router.push('/login')}() :userData = JSON.parse(Cookie.get('user'))
       User.getInfo({name:userData.username}, function(data,status){
-        data.status == 'error' ? Materialize.toast('获取用户信息错误：'+data.info, 4000) : data = data.data
+        data.status == 'error' ? function(){Materialize.toast('获取用户信息错误：'+data.info, 4000);Cookie.delete('user')}() : data = data.data
         vm.username = data.username
         vm.github = data.github
         vm.wechat = data.wechat

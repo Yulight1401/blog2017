@@ -34,8 +34,7 @@
   </li>
 
   </ul>
-  <div class="ds-thread" v-bind:data-thread-key="articleId" data-title="Wtitle" data-url="Wurl"></div>
-  </div>
+</div>
 </template>
 
 <script>
@@ -60,15 +59,6 @@ export default {
     $('.collapsible').collapsible();
     $('.parallax').parallax();
     this.getData()
-    window.duoshuoQuery = {short_name:"yulstudio"};
-	(function() {
-		var ds = document.createElement('script');
-		ds.type = 'text/javascript';ds.async = true;
-		ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.unstable.js';
-		ds.charset = 'UTF-8';
-		(document.getElementsByTagName('head')[0]
-		 || document.getElementsByTagName('body')[0]).appendChild(ds);
-	})();
   },
   watch:{
     'render': function(){
